@@ -2456,6 +2456,18 @@ MulticopterPositionControl::calculate_velocity_setpoint(float dt)
 		vel_sp_slewrate(dt);
 	}
 
+	/* HACK for QuadraCreek Simulation: save old velocity sp in _local_pos_sp and overright _vel_sp with
+	   the offboard command */
+	if (hrt_absolute_time() - _pos_sp_triplet.timestamp < 200000) {
+            // overwrite velocity setpoint if recent offboard message exists
+            _local_pos_sp.vx = _vel_sp(0);
+            _local_pos_sp.vy = _vel_sp(1);
+            _local_pos_sp.vz = _vel_sp(2);
+            _vel_sp(0) = _pos_sp_triplet.current.vx;
+            _vel_sp(1) = _pos_sp_triplet.current.vy;
+            _vel_sp(2) = _pos_sp_triplet.current.vz;
+    }
+
 	_vel_sp_prev = _vel_sp;
 
 	/* special velocity setpoint limitation for smooth takeoff (after slewrate!) */
@@ -2476,6 +2488,7 @@ MulticopterPositionControl::calculate_velocity_setpoint(float dt)
 	}
 
 	_vel_sp(2) = math::constrain(_vel_sp(2), -_params.vel_max_up, _params.vel_max_down);
+
 }
 
 void
@@ -3086,9 +3099,12 @@ MulticopterPositionControl::task_main()
 			_local_pos_sp.y = _pos_sp(1);
 			_local_pos_sp.z = _pos_sp(2);
 			_local_pos_sp.yaw = _att_sp.yaw_body;
-			_local_pos_sp.vx = _vel_sp(0);
-			_local_pos_sp.vy = _vel_sp(1);
-			_local_pos_sp.vz = _vel_sp(2);
+			if (!(hrt_absolute_time() - _pos_sp_triplet.timestamp < 200000)) {
+				// recent offboard message exists
+				_local_pos_sp.vx = _vel_sp(0);
+				_local_pos_sp.vy = _vel_sp(1);
+				_local_pos_sp.vz = _vel_sp(2);
+			}
 
 			/* publish local position setpoint */
 			if (_local_pos_sp_pub != nullptr) {
