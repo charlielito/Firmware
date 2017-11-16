@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- *   Copyright (c) 2017 PX4 Development Team. All rights reserved.
+ *   Copyright (C) 2017 PX4 Development Team. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,27 +32,24 @@
  ****************************************************************************/
 
 /**
- * @file board_config.h
+ * @file px4fmu_i2c.c
  *
- * SITL internal definitions
+ * Board-specific I2C functions.
  */
 
-#pragma once
+#include "board_config.h"
 
-#define BOARD_OVERRIDE_UUID "SIMULATIONID" // must be of length 12 (PX4_CPU_UUID_BYTE_LENGTH)
-#define BOARD_OVERRIDE_MFGUID BOARD_OVERRIDE_UUID
+__EXPORT bool px4_i2c_bus_external(int bus)
+{
+	if (HW_VER_FMUV3 == board_get_hw_version()) {
+		/* All FMUV3 2.1 i2c buses are external */
+		return true;
 
-#define BOARD_NAME "SITL"
-#define BOARD_BATTERY1_V_DIV   (10.177939394f)
-#define BOARD_BATTERY1_A_PER_V (15.391030303f)
-#define BOARD_HAS_NO_RESET
-#define BOARD_HAS_NO_BOOTLOADER
+	} else {
+		if (bus != PX4_I2C_BUS_ONBOARD) {
+			return true;
+		}
+	}
 
-#define CONFIG_ARCH_BOARD_SITL 1
-
-#define PX4_I2C_BUS_EXPANSION	1
-#define PX4_I2C_BUS_ONBOARD		2
-#define PX4_NUMBER_I2C_BUSES 1
-
-#include <system_config.h>
-#include "../common/board_common.h"
+	return false;
+}

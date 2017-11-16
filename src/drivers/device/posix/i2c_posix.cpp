@@ -72,8 +72,6 @@ I2C::I2C(const char *name,
 	// protected
 	_retries(0),
 	// private
-	_bus(bus),
-	_address(address),
 	_fd(-1)
 {
 	DEVICE_DEBUG("I2C::I2C name = %s devname = %s", name, devname);
@@ -119,7 +117,7 @@ I2C::init()
 
 		// Open the actual I2C device
 		char dev_path[16];
-		snprintf(dev_path, sizeof(dev_path), "/dev/i2c-%i", _bus);
+		snprintf(dev_path, sizeof(dev_path), "/dev/i2c-%i", get_device_bus());
 		_fd = ::open(dev_path, O_RDWR);
 
 		if (_fd < 0) {
@@ -156,7 +154,7 @@ I2C::transfer(const uint8_t *send, unsigned send_len, uint8_t *recv, unsigned re
 		msgs = 0;
 
 		if (send_len > 0) {
-			msgv[msgs].addr = _address;
+			msgv[msgs].addr = get_device_address();
 			msgv[msgs].flags = 0;
 			msgv[msgs].buf = const_cast<uint8_t *>(send);
 			msgv[msgs].len = send_len;
@@ -164,7 +162,7 @@ I2C::transfer(const uint8_t *send, unsigned send_len, uint8_t *recv, unsigned re
 		}
 
 		if (recv_len > 0) {
-			msgv[msgs].addr = _address;
+			msgv[msgs].addr = get_device_address();
 			msgv[msgs].flags = I2C_M_READ;
 			msgv[msgs].buf = recv;
 			msgv[msgs].len = recv_len;
@@ -217,7 +215,7 @@ I2C::transfer(struct i2c_msg *msgv, unsigned msgs)
 
 	/* force the device address into the message vector */
 	for (unsigned i = 0; i < msgs; i++) {
-		msgv[i].addr = _address;
+		msgv[i].addr = get_device_address();
 	}
 
 	do {
