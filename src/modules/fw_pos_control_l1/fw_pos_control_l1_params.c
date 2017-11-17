@@ -88,6 +88,21 @@ PARAM_DEFINE_FLOAT(FW_L1_DAMPING, 0.75f);
 PARAM_DEFINE_FLOAT(FW_THR_CRUISE, 0.6f);
 
 /**
+ * Scale throttle by altitude AMSL
+ *
+ * This parameter sets the amount of meters above sea level for which to add 1% of throttle.
+ * When flying without airspeed sensor this will help to keep a constant performance
+ * over large altitude ranges.
+ *
+ * E.G: setting this to 300 will increase the cruise throttle by 0.5% when flying at 150m above
+ * sealevel or 2% when flying at 600m above sealevel
+ *
+ * @unit m
+ * @group FW Attitude Control
+ */
+PARAM_DEFINE_INT32(FW_THR_ALT_SCL, 0);
+
+/**
  * Throttle max slew rate
  *
  * Maximum slew rate for the commanded throttle

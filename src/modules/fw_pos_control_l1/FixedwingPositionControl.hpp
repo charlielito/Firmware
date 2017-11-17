@@ -145,16 +145,16 @@ private:
 	bool		_task_should_exit{false};		///< if true, sensor task should exit */
 	bool		_task_running{false};			///< if true, task is running in its mainloop */
 
-	int		_global_pos_sub{-1};
-	int		_local_pos_sub{-1};
-	int		_pos_sp_triplet_sub{-1};
-	int		_control_mode_sub{-1};			///< control mode subscription */
-	int		_vehicle_attitude_sub{-1};		///< vehicle attitude subscription */
-	int		_vehicle_command_sub{-1};		///< vehicle command subscription */
-	int		_vehicle_status_sub{-1};		///< vehicle status subscription */
-	int		_vehicle_land_detected_sub{-1};		///< vehicle land detected subscription */
-	int		_params_sub{-1};			///< notification of parameter updates */
-	int		_manual_control_sub{-1};		///< notification of manual control updates */
+	int		_global_pos_sub{ -1};
+	int		_local_pos_sub{ -1};
+	int		_pos_sp_triplet_sub{ -1};
+	int		_control_mode_sub{ -1};			///< control mode subscription */
+	int		_vehicle_attitude_sub{ -1};		///< vehicle attitude subscription */
+	int		_vehicle_command_sub{ -1};		///< vehicle command subscription */
+	int		_vehicle_status_sub{ -1};		///< vehicle status subscription */
+	int		_vehicle_land_detected_sub{ -1};		///< vehicle land detected subscription */
+	int		_params_sub{ -1};			///< notification of parameter updates */
+	int		_manual_control_sub{ -1};		///< notification of manual control updates */
 
 	orb_advert_t	_attitude_sp_pub{nullptr};		///< attitude setpoint */
 	orb_advert_t	_tecs_status_pub{nullptr};		///< TECS status publication */
@@ -293,6 +293,7 @@ private:
 		float throttle_idle;
 		float throttle_cruise;
 		float throttle_slew_max;
+		int32_t throttle_alt_scale;
 
 		float man_roll_max_rad;
 		float man_pitch_max_rad;
@@ -351,6 +352,7 @@ private:
 		param_t throttle_idle;
 		param_t throttle_cruise;
 		param_t throttle_slew_max;
+		param_t throttle_alt_scale;
 
 		param_t man_roll_max_deg;
 		param_t man_pitch_max_deg;

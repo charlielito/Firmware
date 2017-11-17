@@ -217,7 +217,6 @@ private:
 		int32_t vtol_type;					/**< VTOL type: 0 = tailsitter, 1 = tiltrotor */
 
 		int32_t bat_scale_en;			/**< Battery scaling enabled */
-		int32_t thr_alt_scale;			/**< Altitude throttle scaling */
 
 	}		_parameters{};			/**< local copies of interesting parameters */
 
@@ -279,7 +278,6 @@ private:
 		param_t vtol_type;
 
 		param_t bat_scale_en;
-		param_t thr_alt_scale;
 
 	} _parameter_handles{};		/**< handles for interesting parameters */
 
@@ -463,7 +461,6 @@ FixedwingAttitudeControl::FixedwingAttitudeControl() :
 	_parameter_handles.rattitude_thres = param_find("FW_RATT_TH");
 
 	_parameter_handles.bat_scale_en = param_find("FW_BAT_SCALE_EN");
-	_parameter_handles.thr_alt_scale = param_find("FW_THR_ALT_SCL");
 
 	/* fetch initial parameter values */
 	parameters_update();
@@ -573,7 +570,6 @@ FixedwingAttitudeControl::parameters_update()
 	}
 
 	param_get(_parameter_handles.bat_scale_en, &_parameters.bat_scale_en);
-	param_get(_parameter_handles.thr_alt_scale, &_parameters.thr_alt_scale);
 
 	/* pitch control parameters */
 	_pitch_ctrl.set_time_constant(_parameters.p_tc);
@@ -1140,14 +1136,6 @@ FixedwingAttitudeControl::task_main()
 							_actuators.control[actuator_controls_s::INDEX_THROTTLE] *= _battery_status.scale;
 						}
 
-						/* scale effort by altitude ASML */
-						if (_parameters.thr_alt_scale > 0 && _global_pos.alt > 1.0f &&
-						    _actuators.control[actuator_controls_s::INDEX_THROTTLE] > 0.1f) {
-							_actuators.control[actuator_controls_s::INDEX_THROTTLE] += (_global_pos.alt / _parameters.thr_alt_scale) / 100;
-						}
-
-						_actuators.control[actuator_controls_s::INDEX_THROTTLE] = math::constrain(
-									_actuators.control[actuator_controls_s::INDEX_THROTTLE], -1.0f, 1.0f);
 
 						if (!PX4_ISFINITE(throttle_sp)) {
 							if (_debug && loop_counter % 10 == 0) {

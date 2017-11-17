@@ -59,6 +59,7 @@ FixedwingPositionControl::FixedwingPositionControl() :
 	_parameter_handles.throttle_idle = param_find("FW_THR_IDLE");
 	_parameter_handles.throttle_slew_max = param_find("FW_THR_SLEW_MAX");
 	_parameter_handles.throttle_cruise = param_find("FW_THR_CRUISE");
+	_parameter_handles.throttle_alt_scale = param_find("FW_THR_ALT_SCL");
 	_parameter_handles.throttle_land_max = param_find("FW_THR_LND_MAX");
 	_parameter_handles.man_roll_max_deg = param_find("FW_MAN_R_MAX");
 	_parameter_handles.man_pitch_max_deg = param_find("FW_MAN_P_MAX");
@@ -141,6 +142,7 @@ FixedwingPositionControl::parameters_update()
 	param_get(_parameter_handles.throttle_max, &(_parameters.throttle_max));
 	param_get(_parameter_handles.throttle_idle, &(_parameters.throttle_idle));
 	param_get(_parameter_handles.throttle_cruise, &(_parameters.throttle_cruise));
+	param_get(_parameter_handles.throttle_alt_scale, &(_parameters.throttle_alt_scale));
 	param_get(_parameter_handles.throttle_slew_max, &(_parameters.throttle_slew_max));
 
 	param_get(_parameter_handles.throttle_land_max, &(_parameters.throttle_land_max));
@@ -764,6 +766,12 @@ FixedwingPositionControl::control_position(const math::Vector<2> &curr_pos, cons
 			mission_throttle = pos_sp_curr.cruising_throttle;
 		}
 
+		/* scale effort by altitude AMSL */
+		if (_parameters.throttle_alt_scale > 0 && _global_pos.alt > 1.0f &&
+		    mission_throttle > 0.1f) {
+			mission_throttle += (_global_pos.alt / _parameters.throttle_alt_scale) / 100;
+		}
+
 		if (pos_sp_curr.type == position_setpoint_s::SETPOINT_TYPE_IDLE) {
 			_att_sp.thrust = 0.0f;
 			_att_sp.roll_body = 0.0f;
@@ -817,7 +825,7 @@ FixedwingPositionControl::control_position(const math::Vector<2> &curr_pos, cons
 						   radians(_parameters.pitch_limit_max) - _parameters.pitchsp_offset_rad,
 						   _parameters.throttle_min,
 						   _parameters.throttle_max,
-						   _parameters.throttle_cruise,
+						   mission_throttle,
 						   false,
 						   radians(_parameters.pitch_limit_min));
 
