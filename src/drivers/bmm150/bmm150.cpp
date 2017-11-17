@@ -383,7 +383,7 @@ int BMM150::init()
 
 	/* measurement will have generated a report, publish */
 	_topic = orb_advertise_multi(ORB_ID(sensor_mag), &mrb,
-				     &_orb_class_instance, (is_external()) ? ORB_PRIO_HIGH : ORB_PRIO_MAX);
+				     &_orb_class_instance, (external()) ? ORB_PRIO_HIGH : ORB_PRIO_MAX);
 
 	if (_topic == nullptr) {
 		PX4_WARN("ADVERT FAIL");
@@ -682,7 +682,7 @@ BMM150::collect()
 
 
 	mrb.timestamp = hrt_absolute_time();
-	mrb.is_external = is_external();
+	mrb.is_external = external();
 
 	// report the error count as the number of bad transfers.
 	// This allows the higher level code to decide if it
@@ -876,12 +876,6 @@ BMM150::self_test()
 	/* return 0 on success, 1 else */
 	return (perf_event_count(_sample_perf) > 0) ? 0 : 1;
 }
-
-bool BMM150::is_external()
-{
-	return _external;
-}
-
 
 uint8_t
 BMM150::read_reg(uint8_t reg)

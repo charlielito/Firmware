@@ -198,7 +198,6 @@ public:
 	BMM150(int bus, const char *path, bool external, enum Rotation rotation);
 	virtual ~BMM150();
 
-	bool is_external();
 	virtual int             init();
 	virtual ssize_t       read(struct file *filp, char *buffer, size_t buflen);
 	virtual int       ioctl(struct file *filp, int cmd, unsigned long arg);
@@ -220,7 +219,6 @@ protected:
 
 private:
 	work_s            _work{};
-	bool _external;
 
 	bool _running;
 

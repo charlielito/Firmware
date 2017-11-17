@@ -271,7 +271,7 @@ BMP280::init()
 	_reports->get(&brp);
 
 	_baro_topic = orb_advertise_multi(ORB_ID(sensor_baro), &brp,
-					  &_orb_class_instance, _interface->is_external() ? ORB_PRIO_HIGH : ORB_PRIO_DEFAULT);
+					  &_orb_class_instance, _interface->external() ? ORB_PRIO_HIGH : ORB_PRIO_DEFAULT);
 
 	if (_baro_topic == nullptr) {
 		PX4_WARN("failed to create sensor_baro publication");

@@ -874,7 +874,7 @@ static inline int board_shutdown(void) { return -EINVAL; }
  *
  ************************************************************************************/
 
-#if defined(BOARD_HAS_VERSIONING)
+#if defined(BOARD_HAS_SIMPLE_HW_VERSIONING)
 
 __EXPORT bool px4_i2c_bus_external(int bus);
 
@@ -886,7 +886,7 @@ __EXPORT bool px4_i2c_bus_external(int bus);
 #define px4_i2c_bus_external(bus) true
 #endif /* PX4_I2C_BUS_ONBOARD */
 
-#endif /* BOARD_HAS_VERSIONING */
+#endif /* BOARD_HAS_SIMPLE_HW_VERSIONING */
 
 
 /************************************************************************************
@@ -894,7 +894,7 @@ __EXPORT bool px4_i2c_bus_external(int bus);
  *
  ************************************************************************************/
 
-#if defined(BOARD_HAS_VERSIONING)
+#if defined(BOARD_HAS_SIMPLE_HW_VERSIONING)
 
 __EXPORT bool px4_spi_bus_external(int bus);
 
@@ -906,7 +906,7 @@ __EXPORT bool px4_spi_bus_external(int bus);
 #define px4_spi_bus_external(bus) false
 #endif /* PX4_SPI_BUS_EXT */
 
-#endif /* BOARD_HAS_VERSIONING */
+#endif /* BOARD_HAS_SIMPLE_HW_VERSIONING */
 
 
 #include "board_internal_common.h"

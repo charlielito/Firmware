@@ -52,7 +52,6 @@ public:
 	BMP280_I2C(uint8_t bus, uint8_t device, bool external);
 	virtual ~BMP280_I2C() = default;
 
-	bool is_external();
 	int init();
 
 	uint8_t get_reg(uint8_t addr);
@@ -63,7 +62,6 @@ public:
 private:
 	struct bmp280::calibration_s _cal;
 	struct bmp280::data_s _data;
-	bool _external;
 };
 
 bmp280::IBMP280 *bmp280_i2c_interface(uint8_t busnum, uint8_t device, bool external)
@@ -74,12 +72,6 @@ bmp280::IBMP280 *bmp280_i2c_interface(uint8_t busnum, uint8_t device, bool exter
 BMP280_I2C::BMP280_I2C(uint8_t bus, uint8_t device, bool external) :
 	I2C("BMP280_I2C", nullptr, bus, device, 100 * 1000)
 {
-	_external = external;
-}
-
-bool BMP280_I2C::is_external()
-{
-	return _external;
 }
 
 int BMP280_I2C::init()

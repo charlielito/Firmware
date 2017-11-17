@@ -133,7 +133,6 @@ class IBMP280
 public:
 	virtual ~IBMP280() = default;
 
-	virtual bool is_external() = 0;
 	virtual int init() = 0;
 
 	// read reg value

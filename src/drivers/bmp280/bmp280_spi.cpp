@@ -68,7 +68,6 @@ public:
 	BMP280_SPI(uint8_t bus, uint32_t device, bool external);
 	virtual ~BMP280_SPI() = default;
 
-	bool is_external();
 	int init();
 
 	uint8_t get_reg(uint8_t addr);
@@ -79,7 +78,6 @@ public:
 private:
 	spi_calibration_s _cal;
 	spi_data_s _data;
-	bool _external;
 };
 
 bmp280::IBMP280 *bmp280_spi_interface(uint8_t busnum, uint8_t device, bool external)
@@ -90,13 +88,7 @@ bmp280::IBMP280 *bmp280_spi_interface(uint8_t busnum, uint8_t device, bool exter
 BMP280_SPI::BMP280_SPI(uint8_t bus, uint32_t device, bool external) :
 	SPI("BMP280_SPI", nullptr, bus, device, SPIDEV_MODE3, 10 * 1000 * 1000)
 {
-	_external = external;
 }
-
-bool BMP280_SPI::is_external()
-{
-	return _external;
-};
 
 int BMP280_SPI::init()
 {
